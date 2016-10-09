@@ -23,11 +23,17 @@ Install:
 $ stack install
 ```
 
-Run:
+For the detail to run `nyaa`, please refer to help:
 
 ```
-$ echo "{THE_TOKEN}" > token
-$ nyaa-nyaa-nyaa
+$ nyaa --help
+
+```
+
+Or with `stack exec`:
+
+```
+$ stack exec nyaa -- --help
 ```
 
 ## License
