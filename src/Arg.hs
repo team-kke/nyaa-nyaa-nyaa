@@ -1,5 +1,5 @@
 module Arg
-  ( ArgReaderT
+  ( ArgT
   , withArgs
   , animeYamlPath
   ) where
@@ -10,14 +10,14 @@ import System.Console.ArgParser (ParserSpec, withParseResult, reqFlag, parsedBy)
 data Args = Args { getAnimeYamlPath :: String
                  }
 
-type ArgReaderT = ReaderT Args IO
+type ArgT = ReaderT Args IO
 
 argsParser :: ParserSpec Args
 argsParser = Args
   `parsedBy` reqFlag "anime-yaml-path"
 
-withArgs :: ArgReaderT () -> IO ()
+withArgs :: ArgT () -> IO ()
 withArgs r = withParseResult argsParser (runReaderT r)
 
-animeYamlPath :: ArgReaderT String
+animeYamlPath :: ArgT String
 animeYamlPath = getAnimeYamlPath <$> ask

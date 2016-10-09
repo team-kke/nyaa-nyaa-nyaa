@@ -14,7 +14,7 @@ main = withArgs $ do
     threadDelay delay
     main -- re run main until interrupted
 
-loopBody :: ArgReaderT ()
+loopBody :: ArgT ()
 loopBody = do
   yamlPath <- animeYamlPath
   liftIO $ putStrLn yamlPath -- FIXME
