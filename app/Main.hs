@@ -1,8 +1,19 @@
 module Main where
 
-import Lib
+import Arg
+import Control.Monad.IO.Class
+import Control.Concurrent
+
+delay :: Int
+delay = 60 * 1000 * 1000 -- 1 min
 
 main :: IO ()
 main = do
-  s <- fetch "http://www.nyaa.se/?page=rss"
-  putStr s
+  withArgs loopBody
+  threadDelay delay
+  main -- re run main until interrupted
+
+loopBody :: ArgReaderT ()
+loopBody = do
+  yamlPath <- animeYamlPath
+  liftIO $ putStrLn yamlPath -- FIXME
