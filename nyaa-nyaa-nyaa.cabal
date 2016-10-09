@@ -19,12 +19,12 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Lib
-  build-depends:       base >= 4.7 && < 5,
-                       rss-conduit,
-                       wreq,
-                       lens,
-                       bytestring,
-                       split
+  build-depends:       base >= 4.7 && < 5
+                     , rss-conduit
+                     , wreq
+                     , lens
+                     , bytestring
+                     , split
   default-language:    Haskell2010
 
 executable nyaa-nyaa-nyaa
