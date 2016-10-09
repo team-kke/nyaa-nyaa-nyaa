@@ -8,10 +8,11 @@ delay :: Int
 delay = 60 * 1000 * 1000 -- 1 min
 
 main :: IO ()
-main = do
-  withArgs loopBody
-  threadDelay delay
-  main -- re run main until interrupted
+main = withArgs $ do
+  loopBody
+  liftIO $ do
+    threadDelay delay
+    main -- re run main until interrupted
 
 loopBody :: ArgReaderT ()
 loopBody = do
