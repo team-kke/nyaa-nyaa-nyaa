@@ -18,8 +18,9 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Arg
+  exposed-modules:     Config
                        Nyaa
+                       Project
                        Timestamp
   build-depends:       base >= 4.7 && < 5
                      , rss-conduit
@@ -30,6 +31,8 @@ library
                      , yaml
                      , filepath
                      , unix-time
+                     , directory
+                     , yaml
   default-language:    Haskell2010
 
 executable nyaa

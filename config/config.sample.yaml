@@ -1,0 +1,7 @@
+# This is a sample for 'config.yaml'.
+# You can start building the config up from copying this.
+# About loading 'config.yaml', please run 'nyaa' in a shell
+# and check the help text.
+
+# personal access token for LINE Notify
+personal-access-token: SOME_TOKEN

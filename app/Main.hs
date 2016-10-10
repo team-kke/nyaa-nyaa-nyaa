@@ -1,7 +1,7 @@
 module Main where
 
-import Arg
 import Control.Concurrent
+import Config
 import Timestamp (getTimestampRange)
 
 delay :: Int
