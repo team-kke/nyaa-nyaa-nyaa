@@ -3,6 +3,7 @@ module Main where
 import Control.Concurrent
 import Timestamp (getTimestampRange)
 import qualified Line as Line
+import Nyaa
 
 delay :: Int
 delay = 60 * 1000 * 1000 -- 1 min

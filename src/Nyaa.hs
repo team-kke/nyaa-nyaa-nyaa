@@ -2,6 +2,7 @@
 
 module Nyaa
   ( fetch
+  , fetchAndParseRSS
   ) where
 
 import Text.RSS.Types
@@ -13,6 +14,15 @@ import Data.ByteString.Lazy (toStrict)
 import Data.UnixTime (UnixTime, parseUnixTime, mailDateFormat)
 import qualified Data.ByteString.Char8 as DBC
 import qualified Data.List.Split as DLS
+
+import qualified Data.Text as DT
+
+import Control.Monad.Trans.Resource
+import Data.Conduit
+import qualified Data.Conduit.List as DCL
+import Data.Conduit.Parser
+
+import Text.XML.Stream.Parse as XML hiding (choose)
 
 -- parsePubDate: function to parse pubDate field in RSS
 --
@@ -36,3 +46,10 @@ fetch s = do
 
 splitByNewLine :: String -> [String]
 splitByNewLine s = DLS.splitOn "\n" s
+
+fetchAndParseRSS :: String -> IO ()
+fetchAndParseRSS url = do
+  s <- fetch url
+  let input = map DT.pack (splitByNewLine s)
+  r <- DCL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
+  print $ channelTitle r
