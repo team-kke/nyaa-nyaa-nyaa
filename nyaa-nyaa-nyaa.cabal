@@ -19,6 +19,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Config
+                       Line
                        Nyaa
                        Project
                        Timestamp

@@ -1,8 +1,8 @@
 module Main where
 
 import Control.Concurrent
-import Config
 import Timestamp (getTimestampRange)
+import qualified Line as Line
 
 delay :: Int
 delay = 60 * 1000 * 1000 -- 1 min
@@ -15,5 +15,5 @@ main = do
 
 loopBody :: IO ()
 loopBody = do
-  timestampRange <- getTimestampRange
-  print timestampRange
+  -- timestampRange <- getTimestampRange
+  Line.send $ Line.Image "Nyaa Nyaa Nyaa" "http://i.imgur.com/rqWCyZ2.jpg"
