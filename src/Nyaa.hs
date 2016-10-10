@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
-    ( fetch
-    ) where
+module Nyaa
+  ( fetch
+  ) where
 
 import Text.RSS.Types
 import Text.RSS.Conduit.Parse
