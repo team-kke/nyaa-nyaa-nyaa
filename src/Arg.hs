@@ -1,23 +1,45 @@
 module Arg
-  ( ArgT
-  , withArgs
-  , animeYamlPath
+  ( configPath
+  , token
   ) where
 
-import Control.Monad.Trans.Reader
-import System.Console.ArgParser (ParserSpec, withParseResult, reqFlag, parsedBy)
+import System.Console.GetOpt
+import System.Environment (getArgs)
+import System.Exit (exitSuccess)
 
-data Args = Args { getAnimeYamlPath :: String
+data Flag = ConfigDir String
+          | Token String
+          | Help
+          deriving (Show)
+
+flagDesc :: [OptDescr Flag]
+flagDesc =
+  [ Option ['c'] ["config"] (ReqArg ConfigDir "DIR") "Config directory containing anime.yaml and config.yaml"
+  , Option ['t'] ["token"] (ReqArg Token "STRING") "Personal access token issued by LINE Notify"
+  , Option ['h'] ["help"] (NoArg Help) "Show help"
+  ]
+
+helpText :: String
+helpText = usageInfo "nyaa - the anime notifier\n" flagDesc
+
+data Args = Args { getConfigDir :: String
+                 , getToken :: String
                  }
 
-type ArgT = ReaderT Args IO
+args :: IO Args
+args = do
+  args <- getArgs
+  case getOpt Permute flagDesc args of
+    ([ConfigDir configDir, Token token], [], [])
+      -> return $ Args configDir token
+    ([Token token, ConfigDir configDir], [], [])
+      -> return $ Args configDir token
+    otherwise -> do
+      putStrLn helpText
+      exitSuccess
 
-argsParser :: ParserSpec Args
-argsParser = Args
-  `parsedBy` reqFlag "anime-yaml-path"
+configPath :: IO String
+configPath = getConfigDir <$> args
 
-withArgs :: ArgT () -> IO ()
-withArgs r = withParseResult argsParser (runReaderT r)
-
-animeYamlPath :: ArgT String
-animeYamlPath = getAnimeYamlPath <$> ask
+token :: IO String
+token = getToken <$> args
