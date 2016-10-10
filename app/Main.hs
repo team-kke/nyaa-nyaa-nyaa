@@ -2,6 +2,7 @@ module Main where
 
 import Arg
 import Control.Concurrent
+import Timestamp (getTimestampRange)
 
 delay :: Int
 delay = 60 * 1000 * 1000 -- 1 min
@@ -14,5 +15,5 @@ main = do
 
 loopBody :: IO ()
 loopBody = do
-  configPath <- configPath
-  putStrLn configPath -- FIXME
+  timestampRange <- getTimestampRange
+  print timestampRange
