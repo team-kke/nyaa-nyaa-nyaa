@@ -23,17 +23,20 @@ Install:
 $ stack install
 ```
 
-For the detail to run `nyaa`, please refer to help:
+Run `nyaa` with a project directory. The directory should contain
+`config.yaml` and `anime.yaml`. For the Yaml samples, please refer to
+the [`config`](config) directory.
 
 ```
-$ nyaa --help
-
+$ nyaa config/
+$ stack exec nyaa -- config/
 ```
 
-Or with `stack exec`:
+For instruction, run `nyaa` without any argument:
 
 ```
-$ stack exec nyaa -- --help
+$ nyaa
+$ stack exec nyaa
 ```
 
 ## License
