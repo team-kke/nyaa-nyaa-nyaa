@@ -27,8 +27,8 @@ writeTimestamp :: UnixTime -> IO ()
 writeTimestamp = (timestampPath >>=) . flip writeFile . encodeUnixTime
 
 minsAgo :: CTime -> UnixTime -> UnixTime
-minsAgo min (UnixTime a _) = UnixTime (a - usec) 0
-  where usec = min * 60 * 1000 * 1000
+minsAgo min (UnixTime a _) = UnixTime (a - sec) 0
+  where sec = min * 60
 
 now :: IO UnixTime
 now = getUnixTime >>= \(UnixTime a _) -> return $ UnixTime a 0
@@ -40,4 +40,4 @@ getTimestampRange = do
   writeTimestamp til
   case maybeSince of
     Just since -> return (since, til)
-    otherwise -> return (minsAgo 5 til, til)
+    otherwise -> return (5 `minsAgo` til, til)
