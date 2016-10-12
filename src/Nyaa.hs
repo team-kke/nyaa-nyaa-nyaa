@@ -41,7 +41,7 @@ fetch query = do
     options = defaults
       & param "page" .~ ["rss"]
       & param "cats" .~ ["1_11"]
-      & param "cats" .~ [query]
+      & param "term" .~ [query]
 
 splitByNewLine :: Text -> [Text]
 splitByNewLine s = splitOn "\n" s
