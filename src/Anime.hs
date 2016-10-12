@@ -10,7 +10,7 @@ module Anime
 import Project (projectPath)
 import System.Exit (exitSuccess)
 import System.FilePath.Posix
-import Data.Text (unpack, Text)
+import Data.Text (Text)
 import Data.Yaml (decodeFile)
 import URI.ByteString (URIRef(..), Absolute, RelativeRef, serializeURIRef')
 import Text.RSS.Types (RssItem(..), RssURI(..), RssGuid(..))
@@ -42,14 +42,14 @@ instance URIConvertible RssGuid where
   toURIRef (GuidUri r) = toURIRef r
   toURIRef _ = Nothing
 
-type AnimeQuery = String
+type AnimeQuery = Text
 
 getAnimeQueryList :: IO [AnimeQuery]
 getAnimeQueryList = do
   animePath <- (</> "anime.yaml") <$> projectPath
   maybeResult <- decodeFile animePath
   case maybeResult of
-    Just result -> return $ map unpack result
+    Just result -> return result
     otherwise -> do
       putStrLn "No valid anime.yaml!"
       exitSuccess

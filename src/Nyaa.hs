@@ -6,14 +6,15 @@ module Nyaa
   , queryAnimeList
   ) where
 
+import Prelude hiding (isInfixOf)
 import Anime
 import Control.Lens ((^.), (&), (.~))
 import Control.Monad (liftM2)
 import Data.ByteString.Lazy (toStrict)
 import Data.Conduit
 import Data.Conduit.Parser
-import Data.List (isInfixOf)
-import Data.List.Split (splitOn)
+import Data.Text (Text, splitOn, isInfixOf)
+import Data.Text.Encoding (decodeUtf8)
 import Data.Time.Clock (UTCTime)
 import Data.Time.Format (formatTime, defaultTimeLocale)
 import Data.UnixTime
@@ -32,28 +33,28 @@ queryAnimeList range query = do
   rss <- fetchAndParseRSS query
   return $ map toAnime $ filter (isRaw .&&. inRange range) (channelItems rss)
 
-fetch :: AnimeQuery -> IO String
+fetch :: AnimeQuery -> IO Text
 fetch query = do
   r <- getWith options "http://nyaa.se/?page=rss"
-  return . BS.unpack .toStrict $ r ^. responseBody
+  return . decodeUtf8 . toStrict $ r ^. responseBody
   where
     options = defaults
       & param "page" .~ ["rss"]
       & param "cats" .~ ["1_11"]
-      & param "cats" .~ [T.pack query]
+      & param "cats" .~ [query]
 
-splitByNewLine :: String -> [String]
+splitByNewLine :: Text -> [Text]
 splitByNewLine s = splitOn "\n" s
 
 fetchAndParseRSS :: AnimeQuery -> IO RssDocument
 fetchAndParseRSS query = do
-  s <- fetch query
-  let input = map T.pack (splitByNewLine s)
+  t <- fetch query
+  let input = splitByNewLine t
   r <- DCL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
   return r
 
 isRaw :: RssItem -> Bool
-isRaw item = isInfixOf "Raws" (T.unpack $ itemTitle item)
+isRaw item = "Raws" `isInfixOf` (itemTitle item)
 
 inRange :: (UnixTime, UnixTime) -> RssItem -> Bool
 inRange (since, til) item =

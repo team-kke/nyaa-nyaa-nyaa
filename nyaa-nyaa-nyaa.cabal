@@ -29,7 +29,6 @@ library
                      , wreq
                      , lens
                      , bytestring
-                     , split
                      , yaml
                      , filepath
                      , unix-time
@@ -40,7 +39,6 @@ library
                      , xml-conduit
                      , text
                      , conduit-parse
-                     , strict
                      , uri-bytestring
                      , time
   default-language:    Haskell2010

@@ -4,12 +4,13 @@ module Config
   ( personalAccessToken
   ) where
 
+import Data.Text
 import Data.Yaml
 import Project (projectPath)
 import System.Exit (exitSuccess)
 import System.FilePath.Posix
 
-data Config = Config { getPersonalAccessToken :: String }
+data Config = Config { getPersonalAccessToken :: Text }
 
 instance FromJSON Config where
   parseJSON (Object v) = Config <$> v .: "personal-access-token"
@@ -24,5 +25,5 @@ config = do
       putStrLn "No valid config.yaml!"
       exitSuccess
 
-personalAccessToken :: IO String
+personalAccessToken :: IO Text
 personalAccessToken = getPersonalAccessToken <$> config

@@ -6,19 +6,19 @@ module Line
   , toMessage
   ) where
 
+import Anime
 import Config (personalAccessToken)
 import Control.Lens
-import Data.ByteString hiding (pack)
-import Data.ByteString.Char8
+import Data.ByteString
+import Data.Text hiding (append)
+import Data.Text.Encoding (encodeUtf8)
 import Network.Wreq
 import System.Environment
 
-import Anime
+type PersonalAccessToken = Text
 
-type PersonalAccessToken = String
-
-data Message = Text { text :: String }
-             | Image { text :: String, imageURL :: String }
+data Message = Text { text :: Text }
+             | Image { text :: Text, imageURL :: Text }
 
 body :: Message -> [FormParam]
 body (Text text) = [ "message" := text ]
@@ -28,7 +28,7 @@ body (Image text imageURL) = [ "message" := text
                              ]
 
 option :: PersonalAccessToken -> Options
-option token = defaults & header "Authorization" .~ [pack $ "Bearer " ++ token]
+option token = defaults & header "Authorization" .~ ["Bearer " `append` (encodeUtf8 token)]
 
 send :: Message -> IO ()
 send message = do

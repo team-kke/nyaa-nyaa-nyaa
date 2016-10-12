@@ -2,25 +2,27 @@ module Timestamp
   ( getTimestampRange
   ) where
 
+import Prelude hiding (readFile, writeFile)
+import Data.Text (Text, pack, unpack)
+import Data.Text.IO (readFile, writeFile)
 import Data.UnixTime
 import Foreign.C.Types (CTime)
 import Project (projectPath)
 import System.IO.Error
 import System.FilePath.Posix
-import qualified System.IO.Strict as Strict
 
 timestampPath :: IO FilePath
 timestampPath = (</> "timestamp") <$> projectPath
 
-encodeUnixTime :: UnixTime -> String
-encodeUnixTime = show . utSeconds
+encodeUnixTime :: UnixTime -> Text
+encodeUnixTime = pack . show . utSeconds
 
-decodeUnixTime :: String -> UnixTime
-decodeUnixTime x = UnixTime (read x) 0
+decodeUnixTime :: Text -> UnixTime
+decodeUnixTime x = UnixTime (read (unpack x)) 0
 
 readTimestamp :: IO (Maybe UnixTime)
 readTimestamp =
-  (timestampPath >>= Strict.readFile >>= return . Just . decodeUnixTime)
+  (timestampPath >>= readFile >>= return . Just . decodeUnixTime)
     `catchIOError` (return . const Nothing)
 
 writeTimestamp :: UnixTime -> IO ()
