@@ -42,4 +42,4 @@ getTimestampRange = do
   writeTimestamp til
   case maybeSince of
     Just since -> return (since, til)
-    otherwise -> return (5 `minsAgo` til, til)
+    otherwise -> return (10 `minsAgo` til, til)
