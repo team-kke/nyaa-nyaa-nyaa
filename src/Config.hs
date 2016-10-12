@@ -5,7 +5,6 @@ module Config
   ) where
 
 import Data.Yaml
-import GHC.Generics
 import Project (projectPath)
 import System.Exit (exitSuccess)
 import System.FilePath.Posix

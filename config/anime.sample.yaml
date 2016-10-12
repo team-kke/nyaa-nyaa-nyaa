@@ -1,0 +1,8 @@
+# This is a sample for 'anime.yaml'.
+# You can start building the config up from copying this.
+# About loading 'anime.yaml', please run 'nyaa' in a shell
+# and check the help text.
+
+- love live
+- toradora
+- k-on

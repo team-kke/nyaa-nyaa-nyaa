@@ -1,11 +1,22 @@
-module Anime where
-  -- ( Anime (...)
-  -- , getAnimes
-  -- ) where
+module Anime
+  ( AnimeQuery
+  , getAnimeQueryList
+  ) where
 
--- import Data.Yaml
+import Project (projectPath)
+import System.Exit (exitSuccess)
+import System.FilePath.Posix
+import Data.Text (unpack)
+import Data.Yaml (decodeFile)
 
-data Anime = Anime { name :: String } deriving Show
+type AnimeQuery = String
 
-getAnimes :: IO [Anime]
-getAnimes = undefined
+getAnimeQueryList :: IO [AnimeQuery]
+getAnimeQueryList = do
+  animePath <- (</> "anime.yaml") <$> projectPath
+  maybeResult <- decodeFile animePath
+  case maybeResult of
+    Just result -> return $ map unpack result
+    otherwise -> do
+      putStrLn "No valid anime.yaml!"
+      exitSuccess
