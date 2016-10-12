@@ -4,6 +4,7 @@ module Nyaa
   ( fetch
   , fetchAndParseRSS
   , findItems
+  , queryAnimeList
   ) where
 
 import Text.RSS.Types
@@ -26,6 +27,8 @@ import Data.Conduit.Parser
 
 import Text.XML.Stream.Parse as XML hiding (choose)
 
+import Anime
+
 -- parsePubDate: function to parse pubDate field in RSS
 --
 --   parsePubDate "Mon, 10 Oct 2016 07:23:11 +0000"
@@ -36,8 +39,10 @@ parsePubDate = parseUnixTime mailDateFormat . pack
 
 -- The datetime query range will be in the type of (UnixTime, UnixTime).
 -- The code below is just an example. please feel free to modify it.
-queryAnimeList :: (UnixTime, UnixTime) -> String -> [anime]
-queryAnimeList (since, until) animeName = undefined
+queryAnimeList :: (UnixTime, UnixTime) -> String -> IO [Anime]
+queryAnimeList (since, until) animeName = do
+  rss <- fetchAndParseRSS "http://nyaa.se/?page=rss"
+  return $ map toAnime (findItems rss animeName)
 
 -- Please remove the verbose comments above after understanding them.
 
