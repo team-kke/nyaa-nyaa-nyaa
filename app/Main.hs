@@ -20,5 +20,9 @@ loop interval body = do
 
 body :: IO ()
 body = do
+  r <- fetchAndParseRSS "https://www.nyaa.se/?page=rss"
+  let items = findItems r "Eupho"
+  print $ show $ items
   -- timestampRange <- getTimestampRange
-  Line.send $ Line.Image "Nyaa Nyaa Nyaa" "http://i.imgur.com/rqWCyZ2.jpg"
+--    print channelTitle r
+--    Line.send $ Line.Image "Nyaa Nyaa Nyaa" "http://i.imgur.com/rqWCyZ2.jpg"

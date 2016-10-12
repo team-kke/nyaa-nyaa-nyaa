@@ -17,6 +17,8 @@ import qualified Data.ByteString.Char8 as DBC
 import qualified Data.List.Split as DLS
 import Data.List (isInfixOf)
 
+import URI.ByteString (URIRef, Absolute)
+
 import qualified Data.Text as DT
 
 import Control.Monad.Trans.Resource
@@ -25,6 +27,11 @@ import qualified Data.Conduit.List as DCL
 import Data.Conduit.Parser
 
 import Text.XML.Stream.Parse as XML hiding (choose)
+
+data Anime = Anime { title :: DT.Text
+                   , torrentLink :: Maybe (URIRef Absolute)
+                   , detailLink :: Maybe (URIRef Absolute)
+                   } deriving (Show)
 
 -- parsePubDate: function to parse pubDate field in RSS
 --
@@ -36,10 +43,20 @@ parsePubDate = parseUnixTime mailDateFormat . pack
 
 -- The datetime query range will be in the type of (UnixTime, UnixTime).
 -- The code below is just an example. please feel free to modify it.
-queryAnimeList :: (UnixTime, UnixTime) -> String -> [anime]
-queryAnimeList (since, until) animeName = undefined
+--  queryAnimeList :: (UnixTime, UnixTime) -> String -> IO [Anime]
+--  queryAnimeList (since, until) animeName = do
+--    rss <- fetchAndParseRSS "http://nyaa.se://www.nyaa.se/?page=rss"
+--    return $ map toAnime (findItems rss animeName)
+
+--  toAnime :: RssItem -> Anime
+--  toAnime r = Anime { title=(itemTitle r), torrentLink=(itemLink r => (\r -> )), detailLink=(itemGuid r) }
+
+toURIRef:: RssURI -> URIRef Absolute
+toURIRef (RssURI a) = a
 
 -- Please remove the verbose comments above after understanding them.
+
+
 
 fetch :: String -> IO String
 fetch s = do
