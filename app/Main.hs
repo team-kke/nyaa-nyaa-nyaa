@@ -5,16 +5,20 @@ import Timestamp (getTimestampRange)
 import qualified Line as Line
 import Nyaa
 
-delay :: Int
-delay = 60 * 1000 * 1000 -- 1 min
+interval :: Int
+interval = 60 * 1000 * 1000 -- 1 min
 
 main :: IO ()
 main = do
-  loopBody
-  threadDelay delay
-  main -- re run main until interrupted
+  loop interval body
 
-loopBody :: IO ()
-loopBody = do
+loop :: Int -> IO () -> IO ()
+loop interval body = do
+  body
+  threadDelay interval
+  loop interval body
+
+body :: IO ()
+body = do
   -- timestampRange <- getTimestampRange
   Line.send $ Line.Image "Nyaa Nyaa Nyaa" "http://i.imgur.com/rqWCyZ2.jpg"
