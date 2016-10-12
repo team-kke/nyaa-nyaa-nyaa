@@ -3,6 +3,7 @@
 module Nyaa
   ( fetch
   , fetchAndParseRSS
+  , findItems
   ) where
 
 import Text.RSS.Types
@@ -14,6 +15,7 @@ import Data.ByteString.Lazy (toStrict)
 import Data.UnixTime (UnixTime, parseUnixTime, mailDateFormat)
 import qualified Data.ByteString.Char8 as DBC
 import qualified Data.List.Split as DLS
+import Data.List (isInfixOf)
 
 import qualified Data.Text as DT
 
@@ -47,9 +49,15 @@ fetch s = do
 splitByNewLine :: String -> [String]
 splitByNewLine s = DLS.splitOn "\n" s
 
-fetchAndParseRSS :: String -> IO ()
+fetchAndParseRSS :: String -> IO RssDocument
 fetchAndParseRSS url = do
   s <- fetch url
   let input = map DT.pack (splitByNewLine s)
   r <- DCL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
-  print $ channelTitle r
+  return r
+
+findItems :: RssDocument -> String -> [RssItem]
+findItems document query = filter (titleContain query) (channelItems document)
+
+titleContain :: String -> RssItem -> Bool
+titleContain query item = isInfixOf query (DT.unpack $ itemTitle item)
