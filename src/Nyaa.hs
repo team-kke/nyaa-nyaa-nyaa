@@ -11,16 +11,14 @@ import Text.RSS.Types
 import Text.RSS.Conduit.Parse
 import Network.Wreq
 import Control.Lens ((^.))
-import Data.ByteString.Char8 (pack)
 import Data.ByteString.Lazy (toStrict)
 import Data.UnixTime (UnixTime, parseUnixTime, mailDateFormat)
-import qualified Data.ByteString.Char8 as DBC
-import qualified Data.List.Split as DLS
+import Data.List.Split (splitOn)
 import Data.List (isInfixOf)
 
-import qualified Data.Text as DT
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.Text as T
 
-import Control.Monad.Trans.Resource
 import Data.Conduit
 import qualified Data.Conduit.List as DCL
 import Data.Conduit.Parser
@@ -35,7 +33,7 @@ import Anime
 --
 -- The code above will return UnixTime for the pubDate.
 parsePubDate :: String -> UnixTime
-parsePubDate = parseUnixTime mailDateFormat . pack
+parsePubDate = parseUnixTime mailDateFormat . BS.pack
 
 -- The datetime query range will be in the type of (UnixTime, UnixTime).
 -- The code below is just an example. please feel free to modify it.
@@ -49,15 +47,15 @@ queryAnimeList (since, until) animeName = do
 fetch :: String -> IO String
 fetch s = do
   r <- get s
-  return $ DBC.unpack $ toStrict $ r ^. responseBody
+  return $ BS.unpack $ toStrict $ r ^. responseBody
 
 splitByNewLine :: String -> [String]
-splitByNewLine s = DLS.splitOn "\n" s
+splitByNewLine s = splitOn "\n" s
 
 fetchAndParseRSS :: String -> IO RssDocument
 fetchAndParseRSS url = do
   s <- fetch url
-  let input = map DT.pack (splitByNewLine s)
+  let input = map T.pack (splitByNewLine s)
   r <- DCL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
   return r
 
@@ -65,4 +63,4 @@ findItems :: RssDocument -> String -> [RssItem]
 findItems document query = filter (titleContain query) (channelItems document)
 
 titleContain :: String -> RssItem -> Bool
-titleContain query item = isInfixOf query (DT.unpack $ itemTitle item)
+titleContain query item = isInfixOf query (T.unpack $ itemTitle item)
