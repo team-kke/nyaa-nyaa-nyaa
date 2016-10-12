@@ -3,6 +3,7 @@
 module Line
   ( Message (..)
   , send
+  , toMessage
   ) where
 
 import Config (personalAccessToken)
@@ -11,6 +12,8 @@ import Data.ByteString hiding (pack)
 import Data.ByteString.Char8
 import Network.Wreq
 import System.Environment
+
+import Anime
 
 type PersonalAccessToken = String
 
@@ -32,3 +35,6 @@ send message = do
   token <- personalAccessToken
   postWith (option token) "https://notify-api.line.me/api/notify" (body message)
   return ()
+
+toMessage :: Anime -> Message
+toMessage a = Text $ "New!\n" ++ show a

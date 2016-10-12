@@ -12,13 +12,21 @@ import System.Exit (exitSuccess)
 import System.FilePath.Posix
 import Data.Text (unpack, Text)
 import Data.Yaml (decodeFile)
-import URI.ByteString (URIRef(..), Absolute, RelativeRef)
+import URI.ByteString (URIRef(..), Absolute, RelativeRef, serializeURIRef')
 import Text.RSS.Types (RssItem(..), RssURI(..), RssGuid(..))
+import Data.Maybe (fromMaybe)
+import qualified Data.ByteString.Char8 as BS
 
 data Anime = Anime { title :: Text
                    , torrentLink :: Maybe (URIRef Absolute)
                    , detailLink :: Maybe (URIRef Absolute)
-                   } deriving (Show)
+                   }
+
+instance Show Anime where
+  show (Anime title torrent detail) = "Title: " ++ unpack title ++ "\n" ++ "Torrent: " ++ stringifyURIRef torrent
+
+stringifyURIRef :: Maybe (URIRef Absolute) -> String
+stringifyURIRef m = fromMaybe "none" (fmap (BS.unpack . serializeURIRef') m)
 
 toAnime :: RssItem -> Anime
 toAnime r = Anime { title=(itemTitle r), torrentLink=((itemLink r) >>= toURIRef), detailLink=((itemGuid r) >>= toURIRef) }

@@ -27,16 +27,9 @@ body = do
   mapM_ (queryAndNotify range) animeQueries
 
 queryAndNotify :: (UnixTime, UnixTime) -> AnimeQuery -> IO ()
-queryAndNotify range query =
-  -- FIXME: uncomment following lines and remove return ()
-  -- animes <- queryAnimeList range query
-  -- mapM_ notifyAnime animes
-  return ()
+queryAndNotify range query = do
+  animes <- queryAnimeList range query
+  mapM_ notifyAnime animes
 
--- FIXME: Rename anime as Anime, and replace a2m with whatever you implemented
-notifyAnime :: anime -> IO ()
-notifyAnime = Line.send . a2m
-
--- FIXME: Remove the following function
-a2m :: anime -> Line.Message
-a2m = undefined
+notifyAnime :: Anime -> IO ()
+notifyAnime = Line.send . Line.toMessage
