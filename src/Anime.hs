@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Anime
   ( AnimeQuery
@@ -7,10 +8,13 @@ module Anime
   , toAnime
   ) where
 
+import Line (Messageable (..))
+import Prelude hiding (concat)
 import Project (projectPath)
 import System.Exit (exitSuccess)
 import System.FilePath.Posix
-import Data.Text (Text)
+import Data.Text (Text, concat)
+import Data.Text.Encoding (decodeUtf8)
 import Data.Yaml (decodeFile)
 import URI.ByteString (URIRef(..), Absolute, RelativeRef, serializeURIRef')
 import Text.RSS.Types (RssItem(..), RssURI(..), RssGuid(..))
@@ -22,14 +26,19 @@ data Anime = Anime { title :: Text
                    , detailLink :: Maybe (URIRef Absolute)
                    }
 
-instance Show Anime where
-  show (Anime title torrent detail) = "Title: " ++ unpack title ++ "\n" ++ "Torrent: " ++ stringifyURIRef torrent
+instance Messageable Anime where
+  toText (Anime title torrent detail) =
+    concat ["Title: ", title, "\n", "Torrent: ", stringifyURIRef torrent]
 
-stringifyURIRef :: Maybe (URIRef Absolute) -> String
-stringifyURIRef m = fromMaybe "none" (fmap (BS.unpack . serializeURIRef') m)
+stringifyURIRef :: Maybe (URIRef Absolute) -> Text
+stringifyURIRef (Just x) = (decodeUtf8 . serializeURIRef') $ x
+stringifyURIRef Nothing = "none"
 
 toAnime :: RssItem -> Anime
-toAnime r = Anime { title=(itemTitle r), torrentLink=((itemLink r) >>= toURIRef), detailLink=((itemGuid r) >>= toURIRef) }
+toAnime r = Anime { title = itemTitle r
+                  , torrentLink = (itemLink r) >>= toURIRef
+                  , detailLink = (itemGuid r) >>= toURIRef
+                  }
 
 class URIConvertible a where
   toURIRef :: a -> Maybe (URIRef Absolute)

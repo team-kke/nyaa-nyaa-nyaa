@@ -3,10 +3,10 @@
 module Line
   ( Message (..)
   , send
-  , toMessage
+  , Messageable (..)
   ) where
 
-import Anime
+import Prelude hiding (append)
 import Config (personalAccessToken)
 import Control.Lens
 import Data.ByteString
@@ -19,6 +19,13 @@ type PersonalAccessToken = Text
 
 data Message = Text { text :: Text }
              | Image { text :: Text, imageURL :: Text }
+
+class Messageable a where
+  toText :: a -> Text
+  toText = undefined
+
+  toMessage :: a -> Message
+  toMessage = Text . toText
 
 body :: Message -> [FormParam]
 body (Text text) = [ "message" := text ]
@@ -35,6 +42,3 @@ send message = do
   token <- personalAccessToken
   postWith (option token) "https://notify-api.line.me/api/notify" (body message)
   return ()
-
-toMessage :: Anime -> Message
-toMessage a = Text $ "New!\n" ++ show a
