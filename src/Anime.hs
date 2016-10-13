@@ -28,7 +28,7 @@ data Anime = Anime { title :: Text
 
 instance Messageable Anime where
   toText (Anime title torrent detail) =
-    concat ["- ", title, " (", stringifyURIRef torrent, ")"]
+    concat ["📺 ", title, "\n", stringifyURIRef torrent]
 
 instance Messageable a => Messageable [a] where
   toText = intercalate "\n\n" . map toText
