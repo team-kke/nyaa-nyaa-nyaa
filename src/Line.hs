@@ -6,13 +6,11 @@ module Line
   , Messageable (..)
   ) where
 
-import Prelude hiding (append)
 import Config (personalAccessToken)
 import Control.Lens
 import Data.Text
 import Data.Text.Encoding (encodeUtf8)
 import Network.Wreq
-import System.Environment
 import qualified Data.ByteString as B
 
 type PersonalAccessToken = Text

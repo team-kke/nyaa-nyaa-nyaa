@@ -21,7 +21,7 @@ config = do
   maybeDecodedConfig <- decodeFile configPath
   case maybeDecodedConfig of
     Just decodedConfig -> return decodedConfig
-    otherwise -> do
+    _ -> do
       putStrLn "No valid config.yaml!"
       exitSuccess
 

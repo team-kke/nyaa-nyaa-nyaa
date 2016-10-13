@@ -16,10 +16,8 @@ import System.FilePath.Posix
 import Data.Text (Text, concat, intercalate)
 import Data.Text.Encoding (decodeUtf8)
 import Data.Yaml (decodeFile)
-import URI.ByteString (URIRef(..), Absolute, RelativeRef, serializeURIRef')
+import URI.ByteString (URIRef(..), Absolute, serializeURIRef')
 import Text.RSS.Types (RssItem(..), RssURI(..), RssGuid(..))
-import Data.Maybe (fromMaybe)
-import qualified Data.ByteString.Char8 as BS
 
 data Anime = Anime { title :: Text
                    , torrentLink :: Maybe (URIRef Absolute)
@@ -27,7 +25,7 @@ data Anime = Anime { title :: Text
                    }
 
 instance Messageable Anime where
-  toText (Anime title torrent detail) =
+  toText (Anime title torrent _) =
     concat ["📺 ", title, "\n", stringifyURIRef torrent]
 
 instance Messageable a => Messageable [a] where
@@ -62,6 +60,6 @@ getAnimeQueryList = do
   maybeResult <- decodeFile animePath
   case maybeResult of
     Just result -> return result
-    otherwise -> do
+    _ -> do
       putStrLn "No valid anime.yaml!"
       exitSuccess

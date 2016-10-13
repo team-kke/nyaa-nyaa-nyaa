@@ -6,21 +6,16 @@ import Nyaa
 import TimeRange
 import qualified Line as Line
 
-interval :: Int
-interval = 10 * 60 * 1000 * 1000 -- 10 min
-
-main :: IO ()
-main = do
-  loop interval body
-
-loop :: Int -> IO () -> IO ()
-loop interval body = do
+loop :: IO () -> IO ()
+loop body = do
   body
   threadDelay interval
-  loop interval body
+  loop body
+  where
+    interval = 10 * 60 * 1000 * 1000 -- 10 min
 
-body :: IO ()
-body = do
+main :: IO ()
+main = loop $ do
   range <- getTimeRange
   animeQueries <- getAnimeQueryList
   mapM_ (queryAndNotify range) animeQueries

@@ -11,7 +11,7 @@ projectPath = do
   args <- getArgs
   case args of
     [dir] -> makeAbsolute dir
-    otherwise -> do
+    _ -> do
       printUsage
       exitSuccess
 

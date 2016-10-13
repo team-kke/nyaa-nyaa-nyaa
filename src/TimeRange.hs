@@ -1,5 +1,5 @@
 module TimeRange
-  ( TimeRange (..)
+  ( TimeRange
   , getTimeRange
   ) where
 
@@ -32,4 +32,4 @@ getTimeRange = do
   writeTimestamp til
   case maybeSince of
     Just since -> return (since, til)
-    otherwise -> return (10 `minsAgo` til, til)
+    _ -> return (10 `minsAgo` til, til)

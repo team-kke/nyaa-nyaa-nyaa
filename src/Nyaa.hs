@@ -6,7 +6,6 @@ module Nyaa
   , queryAnimeList
   ) where
 
-import Prelude hiding (isInfixOf)
 import Anime
 import Control.Lens ((^.), (&), (.~))
 import Control.Monad (liftM2)
@@ -20,9 +19,7 @@ import Text.RSS.Conduit.Parse
 import Text.RSS.Types
 import Text.XML.Stream.Parse as XML hiding (choose)
 import TimeRange
-import qualified Data.ByteString.Char8 as BS
-import qualified Data.Conduit.List as DCL
-import qualified Data.Text as T
+import qualified Data.Conduit.List as CL
 
 (.&&.) = liftM2 (&&)
 
@@ -48,7 +45,7 @@ fetchAndParseRSS :: AnimeQuery -> IO RssDocument
 fetchAndParseRSS query = do
   t <- fetch query
   let input = splitByNewLine t
-  DCL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
+  CL.sourceList input =$= XML.parseText' def $$ runConduitParser rssDocument
 
 isRaw :: RssItem -> Bool
 isRaw item = "Raws" `isInfixOf` (itemTitle item)
@@ -57,4 +54,4 @@ inRange :: TimeRange -> RssItem -> Bool
 inRange (since, til) item =
   case itemPubDate item of
     Just x -> since < x && x < til
-    otherwise -> False
+    _ -> False

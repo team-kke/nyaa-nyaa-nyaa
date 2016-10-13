@@ -46,7 +46,7 @@ library
 executable nyaa
   hs-source-dirs:      app
   main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -W -Werror
   build-depends:       base
                      , nyaa-nyaa-nyaa
                      , unix-time
