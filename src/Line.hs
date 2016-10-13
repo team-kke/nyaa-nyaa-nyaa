@@ -27,6 +27,9 @@ class Messageable a where
   toMessage :: a -> Message
   toMessage = Text . toText
 
+instance Messageable Message where
+  toMessage = id
+
 body :: Message -> [FormParam]
 body (Text text) = [ "message" := "\n" `append` text ]
 body (Image text imageURL) = [ "message" := "\n" `append` text
@@ -37,8 +40,9 @@ body (Image text imageURL) = [ "message" := "\n" `append` text
 option :: PersonalAccessToken -> Options
 option token = defaults & header "Authorization" .~ ["Bearer " `B.append` (encodeUtf8 token)]
 
-send :: Message -> IO ()
-send message = do
+send :: Messageable a => a -> IO ()
+send messageable = do
+  let message = toMessage messageable
   token <- personalAccessToken
   postWith (option token) "https://notify-api.line.me/api/notify" (body message)
   return ()

@@ -29,8 +29,5 @@ queryAndNotify :: TimeRange -> AnimeQuery -> IO ()
 queryAndNotify range query = do
   animes <- queryAnimeList range query
   if length animes > 0
-    then notify animes
+    then Line.send animes
     else return ()
-
-notify :: [Anime] -> IO ()
-notify = Line.send . Line.toMessage
