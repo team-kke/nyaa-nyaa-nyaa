@@ -9,11 +9,11 @@ module Line
 import Prelude hiding (append)
 import Config (personalAccessToken)
 import Control.Lens
-import Data.ByteString
-import Data.Text hiding (append)
+import Data.Text
 import Data.Text.Encoding (encodeUtf8)
 import Network.Wreq
 import System.Environment
+import qualified Data.ByteString as B
 
 type PersonalAccessToken = Text
 
@@ -28,14 +28,14 @@ class Messageable a where
   toMessage = Text . toText
 
 body :: Message -> [FormParam]
-body (Text text) = [ "message" := text ]
-body (Image text imageURL) = [ "message" := text
+body (Text text) = [ "message" := "\n" `append` text ]
+body (Image text imageURL) = [ "message" := "\n" `append` text
                              , "imageFullsize" := imageURL
                              , "imageThumbnail" := imageURL
                              ]
 
 option :: PersonalAccessToken -> Options
-option token = defaults & header "Authorization" .~ ["Bearer " `append` (encodeUtf8 token)]
+option token = defaults & header "Authorization" .~ ["Bearer " `B.append` (encodeUtf8 token)]
 
 send :: Message -> IO ()
 send message = do
