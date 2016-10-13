@@ -28,7 +28,7 @@ body = do
 queryAndNotify :: TimeRange -> AnimeQuery -> IO ()
 queryAndNotify range query = do
   animes <- queryAnimeList range query
-  mapM_ notifyAnime animes
+  notify animes
 
-notifyAnime :: Anime -> IO ()
-notifyAnime = Line.send . Line.toMessage
+notify :: [Anime] -> IO ()
+notify = Line.send . Line.toMessage

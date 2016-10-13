@@ -13,7 +13,7 @@ import Prelude hiding (concat)
 import Project (projectPath)
 import System.Exit (exitSuccess)
 import System.FilePath.Posix
-import Data.Text (Text, concat)
+import Data.Text (Text, concat, intercalate)
 import Data.Text.Encoding (decodeUtf8)
 import Data.Yaml (decodeFile)
 import URI.ByteString (URIRef(..), Absolute, RelativeRef, serializeURIRef')
@@ -28,7 +28,10 @@ data Anime = Anime { title :: Text
 
 instance Messageable Anime where
   toText (Anime title torrent detail) =
-    concat ["Title: ", title, "\n", "Torrent: ", stringifyURIRef torrent]
+    concat ["- ", title, " (", stringifyURIRef torrent, ")"]
+
+instance Messageable a => Messageable [a] where
+  toText = intercalate "\n\n" . map toText
 
 stringifyURIRef :: Maybe (URIRef Absolute) -> Text
 stringifyURIRef (Just x) = (decodeUtf8 . serializeURIRef') $ x
