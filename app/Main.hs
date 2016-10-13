@@ -2,9 +2,8 @@ module Main where
 
 import Anime
 import Control.Concurrent
-import Data.UnixTime
 import Nyaa
-import Timestamp
+import TimeRange
 import qualified Line as Line
 
 interval :: Int
@@ -22,11 +21,11 @@ loop interval body = do
 
 body :: IO ()
 body = do
-  range <- getTimestampRange
+  range <- getTimeRange
   animeQueries <- getAnimeQueryList
   mapM_ (queryAndNotify range) animeQueries
 
-queryAndNotify :: (UnixTime, UnixTime) -> AnimeQuery -> IO ()
+queryAndNotify :: TimeRange -> AnimeQuery -> IO ()
 queryAndNotify range query = do
   animes <- queryAnimeList range query
   mapM_ notifyAnime animes

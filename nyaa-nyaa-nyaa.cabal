@@ -23,7 +23,7 @@ library
                        Line
                        Nyaa
                        Project
-                       Timestamp
+                       TimeRange
   build-depends:       base >= 4.7 && < 5
                      , rss-conduit
                      , wreq
@@ -31,7 +31,6 @@ library
                      , bytestring
                      , yaml
                      , filepath
-                     , unix-time
                      , directory
                      , yaml
                      , resourcet
@@ -41,6 +40,7 @@ library
                      , conduit-parse
                      , uri-bytestring
                      , time
+                     , strict
   default-language:    Haskell2010
 
 executable nyaa
