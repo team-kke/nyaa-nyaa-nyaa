@@ -30,7 +30,7 @@ queryAnimeList range query = do
 
 fetch :: AnimeQuery -> IO Text
 fetch query = do
-  r <- getWith options "http://nyaa.se/?page=rss"
+  r <- getWith options "http://nyaa.se"
   return . decodeUtf8 . toStrict $ r ^. responseBody
   where
     options = defaults
